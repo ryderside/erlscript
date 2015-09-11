@@ -1,0 +1,17 @@
+-script([Param1, Param2]).
+N = get_monster_count();
+
+if (N >= 0) {
+	battle:find_target(111);
+    repeat(0, 401);
+}
+else if(step == 1)
+{
+	add_monster(1001);
+}
+else {
+    copy_finish(success);
+    return true;
+}
+
+repeat(100);
