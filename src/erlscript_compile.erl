@@ -108,7 +108,7 @@ generate_script_module_end() ->
     lists:concat(["script_exec(ScriptId, []) ->","\n",
                   "\t", "erlang:error({badmatch, ScriptId}).\n\n"]).
 %% ====================================================================
-%% DSL(领域特定语言) generate  functions
+%% generate  statements
 %% ====================================================================
 %% 段落分析
 statements(Statements, IndentNum) ->
