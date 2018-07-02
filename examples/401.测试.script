@@ -1,17 +1,14 @@
--script([Param1, Param2]).
-N = get_monster_count();
+-script([MapId]).
 
-if (N >= 0) {
-	battle:find_target(111);
-    repeat(0, 401);
-}
-else if(step == 1)
-{
-	add_monster(1001);
-}
-else {
-    copy_finish(success);
-    return true;
-}
+S = map:get_state();
 
-repeat(100);
+if (S == init) {
+    List = map_cfg:get_monster_list(MapId),
+    map:add_monster(List)
+}
+else if(S == run) {
+    map:loop_ai();
+}
+else if(S == finish) {
+    map:finish()
+}
