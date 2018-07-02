@@ -3,7 +3,7 @@
 S = map:get_state();
 
 if (S == init) {
-    List = map_cfg:get_monster_list(MapId),
+    List = cfg:get_map_monster(MapId),
     map:add_monster(List)
 }
 else if(S == run) {
