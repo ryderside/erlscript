@@ -147,19 +147,23 @@ if_statement({'if', Conditions, Statements, 'else', ElseStatements}, IndentNum) 
                   indent(IndentNum + 1), "false ->\n",
                   statements(ElseStatements, IndentNum + 2), "\n",
                   indent(IndentNum), "end"]);
-if_statement({'if', Conditions, Statements, 'elseif', ElseStatements}, IndentNum) ->
+if_statement({'if', Conditions, Statements, ElseStatement}, IndentNum) ->
     lists:concat([indent(IndentNum), "case ", conditions(Conditions), " of\n",
                   indent(IndentNum + 1), "true ->\n",
                   statements(Statements, IndentNum + 2), ";\n",
                   indent(IndentNum + 1), "false ->\n",
-                  elseif_statement(ElseStatements, IndentNum + 2), "\n",
+                  elseif_statement(ElseStatement, IndentNum + 2), "\n",
                   indent(IndentNum), "end"]).
 
 elseif_statement({'elseif', Conditions, Statements}, IndentNum) ->
     if_statement({'if', Conditions, Statements}, IndentNum);
-elseif_statement({'elseif', Conditions, Statements, 'elseif', ElseIfStatement}, IndentNum) ->
-    lists:concat([if_statement({'if', Conditions, Statements}, IndentNum),
-                  elseif_statement(ElseIfStatement, IndentNum + 1)]);
+elseif_statement({'elseif', Conditions, Statements, ElseIfStatement}, IndentNum) ->
+    lists:concat([indent(IndentNum), "case ", conditions(Conditions), " of\n",
+                 indent(IndentNum + 1), "true ->\n",
+                 statements(Statements, IndentNum + 2), ";\n",
+                 indent(IndentNum + 1), "false ->\n",
+                 elseif_statement(ElseIfStatement, IndentNum + 2), "\n",
+                 indent(IndentNum), "end"]);
 elseif_statement({'elseif', Conditions, Statements, 'else', ElseStatements}, IndentNum) ->
     lists:concat([indent(IndentNum), "case ", conditions(Conditions), " of\n",
                   indent(IndentNum + 1), "true ->\n",
