@@ -177,7 +177,9 @@ elseif_statement({'elseif', Conditions, Statements, 'else', ElseStatements}, Ind
 statement({expresses, Expresses}) ->
     lists:concat([ expresses(Expresses)]);
 statement({match, Term, Expresses}) ->
-    lists:concat([term(Term), " = ", expresses(Expresses)]);
+    ExprCode = expresses(Expresses), %% must before bind code
+    BindCode = bind(Term),
+    lists:concat([BindCode, " = ", ExprCode]);
 statement({return, Expresses}) ->
     lists:concat(["erlang:error({return, ", expresses(Expresses), "})"]).
 
@@ -210,7 +212,42 @@ term({list, List})          -> list(List);
 term({atom, Atom})          -> Atom;
 term({integer, Integer})    -> Integer;
 term({float, Float})        -> Float;
-term({var, Vars})           -> Vars.
+term({var, Vars})           -> vars(Vars).
+
+bind({tuple, Tuple})        -> tuple(Tuple);
+bind({list, List})          -> list(List);
+bind({atom, Atom})          -> Atom;
+bind({integer, Integer})    -> Integer;
+bind({float, Float})        -> Float;
+bind({var, Vars}) ->
+    CurRef = case get_vars_ref(Vars) of
+                undefined ->
+                    set_vars_ref(Vars, 0);
+                Ref ->
+                    set_vars_ref(Vars, Ref + 1)
+             end,
+    lists:concat([Vars, CurRef]).
+
+vars(Vars) ->
+    CurRef = case get_vars_ref(Vars) of
+                 undefined ->
+                     set_vars_ref(Vars, 0);
+                 Ref ->
+                     set_vars_ref(Vars, Ref)
+             end,
+    lists:concat([Vars, CurRef]).
+
+get_vars_ref(Vars) ->
+    case erlang:get({vars, Vars}) of
+        undefined ->
+            undefined;
+        Ref ->
+            Ref
+    end.
+
+set_vars_ref(Vars, Ref) ->
+    erlang:put({vars, Vars}, Ref),
+    Ref.
 
 %% 元组
 tuple({element, Element}) ->
