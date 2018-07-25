@@ -22,14 +22,12 @@ import -> '-' 'script' '(' '[' args ']' ')'  :{param, '$5'}.   %%支持参数
 %%语句分析
 %%IF子句
 if_statement -> 'if' '(' conditions ')' '{'  statements '}' : {'if', '$3', '$6'}.
-if_statement -> 'if' '(' conditions ')' '{'  statements '}' elseif_statement : {'if', '$3', '$6', 'elseif', '$8'}.
+if_statement -> 'if' '(' conditions ')' '{'  statements '}' elseif_statement : {'if', '$3', '$6', '$8'}.
 if_statement -> 'if' '(' conditions ')' '{' statements '}' 'else' '{' statements '}' :  {'if','$3','$6', 'else', '$10'}.
 
-
 elseif_statement -> 'else' 'if' '(' conditions ')' '{' statements '}' : {'elseif', '$4', '$7'}.
-elseif_statement -> 'else' 'if' '(' conditions ')' '{' statements '}' elseif_statement : {'elseif', '$4', '$7', 'elseif', '$9'}.
+elseif_statement -> 'else' 'if' '(' conditions ')' '{' statements '}' elseif_statement : {'elseif', '$4', '$7', '$9'}.
 elseif_statement -> 'else' 'if' '(' conditions ')' '{' statements '}' 'else' '{' statements '}' : {'elseif', '$4', '$7', 'else', '$11'}.
-
 
 %%语句
 statement -> expresses  : {expresses, '$1'}.
